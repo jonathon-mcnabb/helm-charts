@@ -41,12 +41,6 @@ initContainers:
     resources:
       {{- toYaml . | nindent 6 }}
     {{- end }}
-    volumeMounts:
-      - name: storage
-        mountPath: "/var/lib/grafana"
-        {{- with .Values.persistence.subPath }}
-        subPath: {{ tpl . $root }}
-        {{- end }}
 {{- end }}
 {{- if .Values.dashboards }}
   - name: download-dashboards
@@ -81,20 +75,6 @@ initContainers:
       - secretRef:
           name: {{ tpl . $root }}
     {{- end }}
-    volumeMounts:
-      - name: config
-        mountPath: "/etc/grafana/download_dashboards.sh"
-        subPath: download_dashboards.sh
-      - name: storage
-        mountPath: "/var/lib/grafana"
-        {{- with .Values.persistence.subPath }}
-        subPath: {{ tpl . $root }}
-        {{- end }}
-      {{- range .Values.extraSecretMounts }}
-      - name: {{ .name }}
-        mountPath: {{ .mountPath }}
-        readOnly: {{ .readOnly }}
-      {{- end }}
 {{- end }}
 {{- if and .Values.sidecar.datasources.enabled .Values.sidecar.datasources.initDatasources }}
   - name: {{ include "grafana.name" . }}-init-sc-datasources
@@ -788,7 +768,7 @@ containers:
         mountPath: {{ tpl .mountPath $root }}
         subPath: {{ tpl (.subPath | default "") $root }}
         readOnly: {{ .readOnly }}
-      {{- end }}
+      {{- end }}s
         {{- with .Values.persistence.subPath }}
         subPath: {{ tpl . $root }}
         {{- end }}
