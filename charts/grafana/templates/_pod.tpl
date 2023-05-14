@@ -789,8 +789,6 @@ containers:
         subPath: {{ tpl (.subPath | default "") $root }}
         readOnly: {{ .readOnly }}
       {{- end }}
-      - name: storage
-        mountPath: "/var/lib/grafana"
         {{- with .Values.persistence.subPath }}
         subPath: {{ tpl . $root }}
         {{- end }}
